@@ -1,0 +1,5 @@
+<div class="item mb-3" *ngFor="let item of items">
+    <h3 class="itemName my-auto mt-4 ml-4 mr-0">{{item.itemName}}</h3>
+    <p class="itemExpiry mb-0 mr-0 ml-4">{{item.bestBeforeOrUseBy}}: {{item.expiryDate}}</p>
+    <p class="quantity text-end mb-1">x{{item.quantity}}</p>
+</div>

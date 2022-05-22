@@ -1,0 +1,28 @@
+<form [formGroup]="addItemForm" class="add-item-form" (submit)="addItem()">
+    <mat-form-feild appearance="fill">
+        <input class="input-style" formControlName="itemName" matInput placeholder="Name">
+    </mat-form-feild>
+    <form-spacer></form-spacer>
+    <mat-form-feild appearance="fill">
+        <mat-select formControlName="bestBeforeOrUseBy">
+            <mat-option *ngFor="let option of bestBeforeOrUseBySelect" [value]="option">
+              {{option}}
+            </mat-option>
+          </mat-select>
+    </mat-form-feild>
+    <form-spacer></form-spacer>
+    <mat-form-feild appearance="fill">
+        <input class="input-style" formControlName="quantity" matInput placeholder="Quantity">
+    </mat-form-feild>
+    <form-spacer></form-spacer>
+    <mat-form-field appearance="fill" style="margin-bottom: -1.34375em">
+        <mat-label>Expiry Date</mat-label>
+        <input formControlName="expiryDate" matInput [matDatepicker]="picker">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+    <form-spacer></form-spacer>
+    <div mat-dialog-actions align="center">
+        <button type="submit" mat-flat-button color="primary">Add Item</button>
+    </div>    
+</form>
