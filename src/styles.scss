@@ -24,7 +24,7 @@ $expiry-tracker-front-end-theme: mat.define-light-theme((
   color: (
     primary: $expiry-tracker-front-end-primary,
     accent: $expiry-tracker-front-end-accent,
-    warn: $expiry-tracker-front-end-warn,
+    warn: $expiry-tracker-front-end-warn
   )
 ));
 
@@ -53,6 +53,9 @@ form-spacer{
   height: 10px;
 }
 
+mat-icon{
+  cursor: pointer;
+}
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

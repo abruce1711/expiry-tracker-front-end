@@ -1,5 +1,18 @@
 <div class="item mb-3" *ngFor="let item of items">
-    <h3 class="itemName my-auto mt-4 ml-4 mr-0">{{item.itemName}}</h3>
-    <p class="itemExpiry mb-0 mr-0 ml-4">{{item.bestBeforeOrUseBy}}: {{item.expiryDate}}</p>
-    <p class="quantity text-end mb-1">x{{item.quantity}}</p>
+    <div class="row g-0 pe-2 pt-2 pb-1">
+        <div class="itemContent col-9 offset-1">
+            <p class="itemName my-0">{{item.ItemName}}</p>
+            <p class="itemExpiry my-0">{{item.BestBeforeOrUseBy}}: {{item.ExpiryDate}}</p>
+        </div>
+        <div align="right" class="itemIcons col-2">
+            <mat-icon>edit</mat-icon>
+            <mat-icon (click)="deleteItem(item)" color="warn">delete</mat-icon>
+            <p class="quantity mb-0 mt-4">x{{item.Quantity}}</p>
+        </div>
+    </div>
+    <!-- <div class="row g-0">
+        <div class="col-2 offset-10 itemQuantity">
+            <p class="quantity my-0">x{{item.Quantity}}</p>
+        </div>
+    </div> -->
 </div>

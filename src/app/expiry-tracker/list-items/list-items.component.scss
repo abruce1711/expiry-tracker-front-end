@@ -1,12 +1,13 @@
 .item {
-    border: 1px solid black;
+    border: 1px solid #b2b2b2;
+    color: #2B303A;
     border-radius: 5px;
 }
 
-.itemName, .itemExpiry {
-    width: 98%;
+.itemName{
+    font-size: 25px;
 }
 
 .quantity {
-    width: 98%;
+    margin-right: 4px;
 }

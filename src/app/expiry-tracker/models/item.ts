@@ -1,16 +1,16 @@
 export class Item {
-    userId: string;
-    itemName: string;
-    expiryDate: string;
-    bestBeforeOrUseBy: string;
-    quantity: number;
+    UserId: string;
+    ItemName: string;
+    ExpiryDate: string;
+    BestBeforeOrUseBy: string;
+    Quantity: number;
 
-    constructor(itemName: string, expiryDate: string, 
+    public constructor(itemName: string, expiryDate: string, 
         bestBeforeOrUseBy:string, quantity: number){
-            this.userId = "1",
-            this.itemName = itemName,
-            this.expiryDate = expiryDate,
-            this.bestBeforeOrUseBy = bestBeforeOrUseBy,
-            this.quantity = quantity
+            this.UserId = "1",
+            this.ItemName = itemName,
+            this.ExpiryDate = expiryDate,
+            this.BestBeforeOrUseBy = bestBeforeOrUseBy,
+            this.Quantity = quantity
         }
 }

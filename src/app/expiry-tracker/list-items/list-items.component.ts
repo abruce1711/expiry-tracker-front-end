@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
 import { Item } from '../models/item';
+import { ResponseModel } from '../models/response-model';
 import { ItemService } from '../services/item.service';
 
 @Component({
@@ -14,7 +14,24 @@ export class ListItemsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.service.getItems().subscribe((items) => {this.items = items});
-    this.service.$updatedItems.subscribe((updatedItems) => {this.items = updatedItems});
+    this.service.getItems().subscribe((response: ResponseModel) => {
+      if(response.Items != null){
+        this.items = response.Items,
+        this.service.$localItemsList.next(response.Items)
+      }
+    });
+
+    this.service.$localItemsList.subscribe((items) => {this.items = items});
+  }
+
+  public deleteItem(item: Item):void {
+    this.service.deleteItem(item.ItemName).subscribe((response: ResponseModel) => {
+      if(response.StatusCode == 200){
+        this.service.removeFromLocalItemList(item);
+      }
+      else {
+        console.log(`Error deleting item, response code = ${response.StatusCode}`);
+      }
+    });
   }
 }
