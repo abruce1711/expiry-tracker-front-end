@@ -11,13 +11,13 @@
 <body>
   <div class="content">
     <div class="row">
-      <div class="add-item-container col-4 mt-3 offset-4">
+      <div class="add-item-container col-11 col-md-8 col-lg-4 mt-3 mx-auto">
         <button (click)="toggleAddItems()" mat-flat-button [ngClass]="addItemToggle ? 'mat-primary' : 'mat-warn'">{{toggleButtonText}}</button>
         <app-add-items [hidden]="addItemToggle"></app-add-items>
       </div>
     </div>
     <div class="row">
-      <div class="list-item-container mt-3 col-4 offset-4">
+      <div class="list-item-container col-11 col-md-8 col-lg-4 mt-3 mx-auto">
         <app-list-items></app-list-items>
       </div>
   </div>
