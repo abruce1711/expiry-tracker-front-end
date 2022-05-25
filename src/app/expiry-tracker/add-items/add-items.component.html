@@ -1,6 +1,8 @@
-<form [formGroup]="addItemForm" class="add-item-form" (submit)="addItem()">
+<button (click)="toggleAddItems(toggleButtonText)" mat-flat-button [ngClass]="addItemToggle ? 'mat-primary' : 'mat-warn'">{{toggleButtonText}}</button>
+<form [formGroup]="addItemForm" class="add-item-form" (submit)="createUpdateItem(submitButtonText)"  [hidden]="addItemToggle">
+    <input type="hidden" formControlName="previousName">
     <mat-form-feild appearance="fill">
-        <input class="input-style" formControlName="itemName" matInput placeholder="Name">
+        <input required class="input-style" formControlName="itemName" matInput placeholder="Name">
     </mat-form-feild>
     <form-spacer></form-spacer>
     <mat-form-feild appearance="fill">
@@ -23,6 +25,6 @@
     </mat-form-field>
     <form-spacer></form-spacer>
     <div mat-dialog-actions align="center">
-        <button type="submit" mat-flat-button color="primary">Add Item</button>
+        <button type="submit" mat-flat-button color="primary">{{submitButtonText}}</button>
     </div>    
 </form>

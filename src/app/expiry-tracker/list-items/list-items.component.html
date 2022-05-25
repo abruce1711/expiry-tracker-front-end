@@ -5,7 +5,7 @@
             <p class="itemExpiry my-0">{{item.BestBeforeOrUseBy}}: {{item.ExpiryDate}}</p>
         </div>
         <div align="right" class="itemIcons col-2">
-            <mat-icon>edit</mat-icon>
+            <mat-icon (click)="editItem(item)">edit</mat-icon>
             <mat-icon (click)="deleteItem(item)" color="warn">delete</mat-icon>
             <p class="quantity mb-0 mt-4">x{{item.Quantity}}</p>
         </div>

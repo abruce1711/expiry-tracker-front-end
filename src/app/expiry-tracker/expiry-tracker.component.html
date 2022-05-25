@@ -12,8 +12,7 @@
   <div class="content">
     <div class="row">
       <div class="add-item-container col-11 col-md-8 col-lg-4 mt-3 mx-auto">
-        <button (click)="toggleAddItems()" mat-flat-button [ngClass]="addItemToggle ? 'mat-primary' : 'mat-warn'">{{toggleButtonText}}</button>
-        <app-add-items [hidden]="addItemToggle"></app-add-items>
+        <app-add-items></app-add-items>
       </div>
     </div>
     <div class="row">

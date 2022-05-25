@@ -17,7 +17,7 @@ export class ListItemsComponent implements OnInit {
     this.service.getItems().subscribe((response: ResponseModel) => {
       if(response.Items != null){
         this.items = response.Items,
-        this.service.$localItemsList.next(response.Items)
+        this.service.buildLocalItemList(response.Items);
       }
     });
 
@@ -25,13 +25,18 @@ export class ListItemsComponent implements OnInit {
   }
 
   public deleteItem(item: Item):void {
+    this.service.removeFromLocalItemList(item);
     this.service.deleteItem(item.ItemName).subscribe((response: ResponseModel) => {
-      if(response.StatusCode == 200){
-        this.service.removeFromLocalItemList(item);
+      if(response.StatusCode != 200){
+        this.service.addToLocalItemList(item);
       }
       else {
         console.log(`Error deleting item, response code = ${response.StatusCode}`);
       }
     });
+  }
+
+  public editItem(item: Item):void{
+      this.service.editItem(item);
   }
 }

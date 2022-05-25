@@ -1,6 +1,7 @@
 export class Item {
     UserId: string;
     ItemName: string;
+    PreviousItemName?:string;
     ExpiryDate: string;
     BestBeforeOrUseBy: string;
     Quantity: number;
