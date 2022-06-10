@@ -11,6 +11,7 @@ import { MaterialModule } from './material.module';
 import { ItemService } from './expiry-tracker/services/item.service';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { DeleteModalComponent } from './shared/components/delete-modal/delete-modal.component';
 
 const MY_DATE_FORMAT = {
   parse: {
@@ -37,7 +38,8 @@ const MY_DATE_FORMAT = {
     AppComponent,
     ExpiryTrackerComponent,
     ListItemsComponent,
-    AddItemsComponent
+    AddItemsComponent,
+    DeleteModalComponent
   ],
   providers: [
     ItemService,

@@ -1,0 +1,18 @@
+<ng-template #content let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Are you sure?</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="mb-3">
+          <p>Are you sure you want to delete {{item.ItemName}}?</p>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" mat-flat-button (click)="modal.close('Save click')">Cancel</button>  
+      <button type="button" mat-flat-button color="warn" (click)="modal.close('Save click')">Delete</button>
+    </div>
+  </ng-template>
+

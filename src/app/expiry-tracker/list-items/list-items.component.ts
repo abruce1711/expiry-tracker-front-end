@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { DeleteModalService } from 'src/app/shared/services/delete-modal.service';
 import { Item } from '../models/item';
 import { ResponseModel } from '../models/response-model';
 import { ItemService } from '../services/item.service';
@@ -10,7 +11,7 @@ import { ItemService } from '../services/item.service';
 })
 export class ListItemsComponent implements OnInit {
   items: Item[];
-  constructor(private service:ItemService) {
+  constructor(private service:ItemService, private deleteModalService:DeleteModalService) {
   }
 
   ngOnInit(): void {
@@ -24,17 +25,20 @@ export class ListItemsComponent implements OnInit {
     this.service.$localItemsList.subscribe((items) => {this.items = items});
   }
 
-  public deleteItem(item: Item):void {
-    this.service.removeFromLocalItemList(item);
-    this.service.deleteItem(item.ItemName).subscribe((response: ResponseModel) => {
-      if(response.StatusCode != 200){
-        this.service.addToLocalItemList(item);
-      }
-      else {
-        console.log(`Error deleting item, response code = ${response.StatusCode}`);
-      }
-    });
+  public deleteItem(item: Item){
+    this.deleteModalService.confirmDeleteItem(item);
   }
+  // public deleteItem(item: Item):void {
+  //   this.service.removeFromLocalItemList(item);
+  //   this.service.deleteItem(item.ItemName).subscribe((response: ResponseModel) => {
+  //     if(response.StatusCode != 200){
+  //       this.service.addToLocalItemList(item);
+  //     }
+  //     else {
+  //       console.log(`Error deleting item, response code = ${response.StatusCode}`);
+  //     }
+  //   });
+  // }
 
   public editItem(item: Item):void{
       this.service.editItem(item);

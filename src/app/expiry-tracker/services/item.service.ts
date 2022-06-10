@@ -31,7 +31,6 @@ export class ItemService {
 
   public buildLocalItemList(items: Item[]): void{
     let sortedItems = this.sortLocalItems(items);
-    debugger;
     this.$localItemsList.next(sortedItems);
   }
 
