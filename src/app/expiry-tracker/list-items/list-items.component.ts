@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Item } from '../models/item';
 import { ResponseModel } from '../models/response-model';
 import { ItemService } from '../services/item.service';
@@ -12,11 +12,14 @@ import { ItemService } from '../services/item.service';
 export class ListItemsComponent implements OnInit {
   items: Item[];
   itemToDeleteName: string;
+  loading: boolean;
   constructor(private service:ItemService, private modalService: NgbModal) {
   }
 
   ngOnInit(): void {
+    this.loading = true;
     this.service.getItems().subscribe((response: ResponseModel) => {
+      this.loading = false;
       if(response.Items != null){
         this.items = response.Items,
         this.service.buildLocalItemList(response.Items);
