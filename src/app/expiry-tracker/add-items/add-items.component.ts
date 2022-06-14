@@ -95,8 +95,6 @@ export class AddItemsComponent implements OnInit {
     this.service.createUpdateItem(this.item).subscribe((response: ResponseModel) => {
       if(response.StatusCode != 200 && response.Item == null){  
         this.service.removeFromLocalItemList(this.item);
-      }
-      else {
         console.log(`Error adding item, response code = ${response.StatusCode}`);
       }
     });

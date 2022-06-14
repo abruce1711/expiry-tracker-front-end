@@ -1,3 +1,21 @@
+<ng-template #deleteItemModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">Are you sure?</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <form>
+        <div class="mb-3">
+          <p>Are you sure you want to delete {{itemToDeleteName}} from the list?</p>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" mat-flat-button (click)="modal.close('Cancel')">Cancel</button>  
+      <button type="button" mat-flat-button color="warn" (click)="modal.close('Delete')">Delete</button>
+    </div>
+</ng-template>
+<!-- 
 <div class="searchWrapper">
     <form>
         <mat-form-feild>
@@ -5,7 +23,8 @@
             <mat-icon class="mt-5" id="searchIcon">search</mat-icon>
         </mat-form-feild>
     </form>
-</div>
+</div> -->
+
 <div class="item mb-3" *ngFor="let item of items">
     <div class="row g-0 pe-2 pt-2 pb-1">
         <div class="itemContent col-9 offset-1">
@@ -14,8 +33,9 @@
         </div>
         <div align="right" class="itemIcons col-2">
             <mat-icon (click)="editItem(item)">edit</mat-icon>
-            <mat-icon (click)="deleteItem(item)" color="warn">delete</mat-icon>
+            <mat-icon (click)="confirmDelete(deleteItemModal, item)" color="warn">delete</mat-icon>
             <p class="quantity mb-0 mt-4">x{{item.Quantity}}</p>
         </div>
     </div>
 </div>
+
