@@ -81,8 +81,9 @@ export class AddItemsComponent implements OnInit {
 
   public createUpdateItem(submitButtonText:string):void {
     this.item = new Item(this.itemName.value, 
-      formatDate(this.expiryDate.value, 'dd/MM/yyyy', 'en_GB'),
-      this.bestBeforeOrUseBy.value, this.quantity.value);
+      this.bestBeforeOrUseBy.value, this.quantity.value,
+      formatDate(this.expiryDate.value, 'dd/MM/yyyy', 'en_GB')
+      );
 
     if(submitButtonText == this.editItemButtonText){
         this.toggleEditItems();
@@ -103,7 +104,7 @@ export class AddItemsComponent implements OnInit {
   }
 
   private buildForm(itemToEdit?: Item):void{
-    if(itemToEdit != null){
+    if(itemToEdit != null && itemToEdit.ExpiryDate != null){
       var dateParts = itemToEdit.ExpiryDate.split("/");
       var expiryDate = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]);
 
