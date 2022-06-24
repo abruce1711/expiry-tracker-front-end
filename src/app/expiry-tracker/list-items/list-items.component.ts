@@ -18,7 +18,7 @@ export class ListItemsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getItems();
+   this.getItems();
 
     this.service.$localItemsList.subscribe((items) => {this.items = items});
     this.service.$fridgeFreezerToggle.subscribe((toggle) => {
