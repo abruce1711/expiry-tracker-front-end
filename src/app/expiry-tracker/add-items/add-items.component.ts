@@ -93,9 +93,9 @@ export class AddItemsComponent implements OnInit {
 
   public createUpdateItem(submitButtonText:string):void {
     if(this.fridge){
-      this.item = new Item(this.itemName.value, this.quantity.value,
+      this.item = new Item(this.itemName.value, this.quantity.value, formatDate(this.expiryDate.value, 'dd/MM/yyyy', 'en_GB'),
         this.bestBeforeOrUseBy.value,
-        formatDate(this.expiryDate.value, 'dd/MM/yyyy', 'en_GB')
+        
         );
     }
     else {
@@ -148,7 +148,7 @@ export class AddItemsComponent implements OnInit {
       } 
     }
     else {
-      if(itemToEdit != null && itemToEdit.ExpiryDate != null){  
+      if(itemToEdit != null){  
         this.addItemForm = new FormGroup({
           itemName: new FormControl(itemToEdit.ItemName),
           previousName: new FormControl(itemToEdit.ItemName),
