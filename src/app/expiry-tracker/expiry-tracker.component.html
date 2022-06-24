@@ -10,7 +10,10 @@
 
 <body>
   <div class="content">
-    <app-delete-modal></app-delete-modal>
+    <mat-button-toggle-group name="fontStyle" aria-label="Font Style" value="fridge" (change)="toggleFridgeFreezer($event.value)">
+      <mat-button-toggle value="expirytracker">Fridge</mat-button-toggle>
+      <mat-button-toggle value="freezertracker">Freezer</mat-button-toggle>
+    </mat-button-toggle-group>
     <div class="row">
       <div class="add-item-container col-11 col-md-8 col-lg-4 mt-3 mx-auto">
         <app-add-items></app-add-items>

@@ -10,6 +10,7 @@ import { ItemService } from '../services/item.service';
   styleUrls: ['./list-items.component.scss']
 })
 export class ListItemsComponent implements OnInit {
+  displayFridge: boolean
   items: Item[];
   itemToDeleteName: string;
   loading: boolean;
@@ -17,16 +18,28 @@ export class ListItemsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+   this.getItems();
+
+    this.service.$localItemsList.subscribe((items) => {this.items = items});
+    this.service.$fridgeFreezerToggle.subscribe((toggle) => {
+      if(toggle === "expirytracker"){
+        this.displayFridge = true;
+      } else {
+        this.displayFridge = false;
+      }
+      this.getItems();
+    });
+  }
+
+  private getItems(){
     this.loading = true;
     this.service.getItems().subscribe((response: ResponseModel) => {
       this.loading = false;
       if(response.Items != null){
-        this.items = response.Items,
+        this.items = response.Items;
         this.service.buildLocalItemList(response.Items);
       }
     });
-
-    this.service.$localItemsList.subscribe((items) => {this.items = items});
   }
 
   private deleteItem(item: Item):void {

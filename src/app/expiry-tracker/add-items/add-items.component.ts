@@ -15,6 +15,7 @@ import { ResponseModel } from '../models/response-model';
 })
 export class AddItemsComponent implements OnInit {
 
+  fridge: boolean;
   addItemForm:FormGroup;
   addItemToggle: boolean;
   toggleButtonText: string;
@@ -40,10 +41,19 @@ export class AddItemsComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    this.buildForm();
+
+    this.service.$fridgeFreezerToggle.subscribe((toggle) => {
+        if(toggle === "expirytracker"){
+          this.fridge = true;
+        } else {
+          this.fridge = false;
+        }
+    });
+
+    this.buildForm(this.fridge);
     this.service.$itemToEdit.subscribe((itemToEdit: Item) => {
       this.itemToEdit = itemToEdit;
-        this.buildForm(itemToEdit);
+        this.buildForm(this.fridge, itemToEdit);
         this.toggleButtonText = this.cancelEditButtonText;
         this.toggleEditItems();
     });
@@ -59,6 +69,7 @@ export class AddItemsComponent implements OnInit {
   public get expiryDate(): AbstractControl { return this.addItemForm?.get('expiryDate') as FormGroup; }
   public get quantity(): AbstractControl { return this.addItemForm?.get('quantity') as FormGroup; }
   public get previousName(): AbstractControl { return this.addItemForm?.get('previousName') as FormGroup; }
+  public get drawer(): AbstractControl { return this.addItemForm?.get('drawer') as FormGroup; }
 
   private item: Item;
 
@@ -74,15 +85,22 @@ export class AddItemsComponent implements OnInit {
     this.toggleButtonText = this.addItemToggle ? this.toggleAddItemButtonText : this.cancelAddItemButtonText;
 
     if(buttonText == this.cancelEditButtonText){
-      this.buildForm();
+      this.buildForm(this.fridge);
       this.service.addToLocalItemList(this.itemToEdit);
+      this.submitButtonText = this.addItemButtonText;
     }
   }
 
   public createUpdateItem(submitButtonText:string):void {
-    this.item = new Item(this.itemName.value, 
-      formatDate(this.expiryDate.value, 'dd/MM/yyyy', 'en_GB'),
-      this.bestBeforeOrUseBy.value, this.quantity.value);
+    if(this.fridge){
+      this.item = new Item(this.itemName.value, this.quantity.value, formatDate(this.expiryDate.value, 'dd/MM/yyyy', 'en_GB'),
+        this.bestBeforeOrUseBy.value,
+        
+        );
+    }
+    else {
+      this.item = new Item(this.itemName.value, this.quantity.value, undefined, undefined, this.drawer.value);
+    }
 
     if(submitButtonText == this.editItemButtonText){
         this.toggleEditItems();
@@ -99,31 +117,54 @@ export class AddItemsComponent implements OnInit {
       }
     });
 
-    this.buildForm();
+    this.buildForm(this.fridge);
   }
 
-  private buildForm(itemToEdit?: Item):void{
-    if(itemToEdit != null){
-      var dateParts = itemToEdit.ExpiryDate.split("/");
-      var expiryDate = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]);
-
-      this.addItemForm = new FormGroup({
-        itemName: new FormControl(itemToEdit.ItemName),
-        previousName: new FormControl(itemToEdit.ItemName),
-        bestBeforeOrUseBy: new FormControl(itemToEdit.BestBeforeOrUseBy),
-        expiryDate: new FormControl(new Date(expiryDate)),
-        quantity: new FormControl(itemToEdit.Quantity),
-        editingItem: new FormControl(true)
-      });
-    } else {
-      this.addItemForm = new FormGroup({
-        itemName: new FormControl(''),
-        previousName: new FormControl(null),
-        bestBeforeOrUseBy: new FormControl(this.bestBeforeOrUseBySelect[0]),
-        expiryDate: new FormControl(new Date()),
-        quantity: new FormControl('1'),
-        editingItem: new FormControl(false)
-      });
+  private buildForm(fridge: boolean, itemToEdit?: Item):void{
+    if(fridge){
+      if(itemToEdit != null && itemToEdit.ExpiryDate != null){
+        var dateParts = itemToEdit.ExpiryDate.split("/");
+        var expiryDate = new Date(+dateParts[2], +dateParts[1] - 1, +dateParts[0]);
+  
+        this.addItemForm = new FormGroup({
+          itemName: new FormControl(itemToEdit.ItemName),
+          previousName: new FormControl(itemToEdit.ItemName),
+          bestBeforeOrUseBy: new FormControl(itemToEdit.BestBeforeOrUseBy),
+          expiryDate: new FormControl(new Date(expiryDate)),
+          quantity: new FormControl(itemToEdit.Quantity),
+          drawer: new FormControl(itemToEdit.Drawer),
+          editingItem: new FormControl(true),
+        });
+      } else {
+        this.addItemForm = new FormGroup({
+          itemName: new FormControl(''),
+          previousName: new FormControl(null),
+          bestBeforeOrUseBy: new FormControl(this.bestBeforeOrUseBySelect[0]),
+          expiryDate: new FormControl(new Date()),
+          quantity: new FormControl('1'),
+          drawer: new FormControl('1'),
+          editingItem: new FormControl(false)
+        });
+      } 
+    }
+    else {
+      if(itemToEdit != null){  
+        this.addItemForm = new FormGroup({
+          itemName: new FormControl(itemToEdit.ItemName),
+          previousName: new FormControl(itemToEdit.ItemName),
+          quantity: new FormControl(itemToEdit.Quantity),
+          drawer: new FormControl(itemToEdit.Drawer),
+          editingItem: new FormControl(true)
+        });
+      } else {
+        this.addItemForm = new FormGroup({
+          itemName: new FormControl(''),
+          previousName: new FormControl(null),
+          quantity: new FormControl('1'),
+          drawer: new FormControl('1'),
+          editingItem: new FormControl(false)
+        });
+      } 
     }
   }
 }

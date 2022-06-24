@@ -2,10 +2,12 @@
 <form [formGroup]="addItemForm" class="add-item-form" (submit)="createUpdateItem(submitButtonText)"  [hidden]="addItemToggle">
     <input type="hidden" formControlName="previousName">
     <mat-form-feild appearance="fill">
-        <input required class="input-style" formControlName="itemName" matInput placeholder="Name">
+        <label>Name</label>
+        <input required class="input-style" formControlName="itemName" matInput>
     </mat-form-feild>
     <form-spacer></form-spacer>
-    <mat-form-feild appearance="fill">
+    <mat-form-feild appearance="fill" *ngIf="fridge">
+        <label>Best before or use by</label>
         <mat-select formControlName="bestBeforeOrUseBy">
             <mat-option *ngFor="let option of bestBeforeOrUseBySelect" [value]="option">
               {{option}}
@@ -13,12 +15,18 @@
           </mat-select>
     </mat-form-feild>
     <form-spacer></form-spacer>
-    <mat-form-feild appearance="fill">
-        <input class="input-style" formControlName="quantity" matInput placeholder="Quantity">
+    <mat-form-feild appearance="fill" *ngIf="!fridge">
+        <label>Drawer</label>
+        <input class="input-style" formControlName="drawer" matInput>
     </mat-form-feild>
     <form-spacer></form-spacer>
-    <mat-form-field appearance="fill" style="margin-bottom: -1.34375em">
-        <mat-label>Expiry Date</mat-label>
+    <mat-form-feild appearance="fill">
+        <label>Quantity</label>
+        <input class="input-style" formControlName="quantity" matInput>
+    </mat-form-feild>
+    <form-spacer></form-spacer>
+    <mat-label *ngIf="fridge">Expiry Date</mat-label>
+    <mat-form-field appearance="fill" style="margin-bottom: -1.34375em" *ngIf="fridge"> 
         <input formControlName="expiryDate" matInput [matDatepicker]="picker">
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>

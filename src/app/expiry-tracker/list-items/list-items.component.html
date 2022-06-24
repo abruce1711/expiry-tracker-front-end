@@ -25,11 +25,14 @@
     </form>
 </div> -->
 
+<p *ngIf="displayFridge">Fridge</p>
+<p *ngIf="!displayFridge">Freezer</p>
 <div class="item mb-3" *ngFor="let item of items">
     <div class="row g-0 pe-2 pt-2 pb-1">
         <div class="itemContent col-9 offset-1">
             <p class="itemName my-0">{{item.ItemName}}</p>
-            <p class="itemExpiry my-0">{{item.BestBeforeOrUseBy}}: {{item.ExpiryDate}}</p>
+            <p *ngIf="displayFridge" class="itemExpiry my-0">{{item.BestBeforeOrUseBy}}: {{item.ExpiryDate}}</p>
+            <p *ngIf="!displayFridge" class="itemDrawer my-0">Drawer: {{item.Drawer}}</p>
         </div>
         <div align="right" class="itemIcons col-2">
             <mat-icon (click)="editItem(item)">edit</mat-icon>

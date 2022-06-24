@@ -11,6 +11,7 @@ import { MaterialModule } from './material.module';
 import { ItemService } from './expiry-tracker/services/item.service';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
 
 const MY_DATE_FORMAT = {
   parse: {
@@ -31,7 +32,8 @@ const MY_DATE_FORMAT = {
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    MaterialModule
+    MaterialModule,
+    MatButtonToggleModule
   ],
   declarations: [
     AppComponent,
