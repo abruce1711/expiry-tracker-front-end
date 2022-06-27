@@ -20,7 +20,7 @@ export class ListItemsComponent implements OnInit {
   ngOnInit(): void {
    this.getItems();
 
-    this.service.$localItemsList.subscribe((items) => {this.items = items});
+    this.service.$localFridgeItemsList.subscribe((items) => {this.items = items});
     this.service.$fridgeFreezerToggle.subscribe((toggle) => {
       if(toggle === "expirytracker"){
         this.displayFridge = true;

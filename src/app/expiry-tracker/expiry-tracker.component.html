@@ -10,9 +10,9 @@
 
 <body>
   <div class="content">
-    <mat-button-toggle-group name="fontStyle" aria-label="Font Style" value="expirytracker" (change)="toggleFridgeFreezer($event.value)">
-      <mat-button-toggle value="expirytracker">Fridge</mat-button-toggle>
-      <mat-button-toggle value="freezertracker">Freezer</mat-button-toggle>
+    <mat-button-toggle-group class="col-2 offset-5 mt-3" name="fontStyle" aria-label="Font Style" value="expirytracker" (change)="toggleFridgeFreezer($event.value)">
+      <mat-button-toggle class="w-50" value="expirytracker">Fridge</mat-button-toggle>
+      <mat-button-toggle class="w-50" value="freezertracker">Freezer</mat-button-toggle>
     </mat-button-toggle-group>
     <div class="row">
       <div class="add-item-container col-11 col-md-8 col-lg-4 mt-3 mx-auto">
