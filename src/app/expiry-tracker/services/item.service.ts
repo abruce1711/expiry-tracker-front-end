@@ -22,6 +22,7 @@ export class ItemService {
   public testItems: Item[];
   constructor(private httpClient: HttpClient) { 
     this.$localFridgeItemsList = new BehaviorSubject<Item[]>([]);
+    this.$localFreezerItemsList = new BehaviorSubject<Item[]>([]);
     this.$itemToEdit = new ReplaySubject<Item>();
     this.$fridgeFreezerToggle = new BehaviorSubject<string>("expirytracker");
     this.testItem1 = new Item("test item 1", 2, "23-06-2022", "Use By");
@@ -54,19 +55,31 @@ export class ItemService {
       }
     }
 
-    let sortedItems = this.sortLocalItems(fridgeItems);
-    this.$localFridgeItemsList.next(sortedItems);
-
-    this.$localFreezerItemsList.next(freezerItems);
+    if(items[0].ExpiryDate != null){
+      let sortedItems = this.sortLocalItems(fridgeItems);
+      this.$localFridgeItemsList.next(sortedItems);
+  
+    } else {
+      this.$localFreezerItemsList.next(freezerItems);
+    }
   }
 
   public addToLocalItemList(item?: Item): void{
-    var values = this.$localFridgeItemsList.getValue();
-    if(item != null){
-      values.push(item);
-      let sortedItems = this.sortLocalItems(values);
-      this.$localFridgeItemsList.next(sortedItems);
+    if(item?.ExpiryDate != null){
+      var values = this.$localFridgeItemsList.getValue();
+      if(item != null){
+        values.push(item);
+        let sortedItems = this.sortLocalItems(values);
+        this.$localFridgeItemsList.next(sortedItems);
+      }
+    } else {
+      var values = this.$localFreezerItemsList.getValue();
+      if(item != null){
+        values.push(item);
+        this.$localFreezerItemsList.next(values);
+      }
     }
+
   }
 
   public removeFromLocalItemList(itemToDelete?: Item): void{

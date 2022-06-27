@@ -11,7 +11,8 @@ import { ItemService } from '../services/item.service';
 })
 export class ListItemsComponent implements OnInit {
   displayFridge: boolean
-  items: Item[];
+  fridgeItems: Item[];
+  freezerItems: Item[];
   itemToDeleteName: string;
   loading: boolean;
   constructor(private service:ItemService, private modalService: NgbModal) {
@@ -20,7 +21,6 @@ export class ListItemsComponent implements OnInit {
   ngOnInit(): void {
    this.getItems();
 
-    this.service.$localFridgeItemsList.subscribe((items) => {this.items = items});
     this.service.$fridgeFreezerToggle.subscribe((toggle) => {
       if(toggle === "expirytracker"){
         this.displayFridge = true;
@@ -29,14 +29,25 @@ export class ListItemsComponent implements OnInit {
       }
       this.getItems();
     });
+
+    if(this.displayFridge){
+      this.service.$localFridgeItemsList.subscribe((items) => {this.fridgeItems = items});
+    }
+    else {
+      this.service.$localFreezerItemsList.subscribe((items) => {this.freezerItems = items});
+    }
   }
 
   private getItems(){
     this.loading = true;
     this.service.getItems().subscribe((response: ResponseModel) => {
       this.loading = false;
-      if(response.Items != null){
-        this.items = response.Items;
+      if(response.Items != null && this.displayFridge){
+        this.fridgeItems = response.Items;
+        this.service.buildLocalItemList(response.Items);
+      }
+      else if(response.Items != null && !this.displayFridge){
+        this.freezerItems = response.Items;
         this.service.buildLocalItemList(response.Items);
       }
     });
