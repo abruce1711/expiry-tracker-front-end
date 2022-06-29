@@ -61,7 +61,7 @@
 </div>
 </div>
 
-<div mat-dialog-actions align="center" [hidden]="!loading">
+<div mat-dialog-actions align="center" *ngIf="displaySpinner">
   <p>Loading items...</p>
   <mat-spinner color="primary"></mat-spinner>
 </div>    

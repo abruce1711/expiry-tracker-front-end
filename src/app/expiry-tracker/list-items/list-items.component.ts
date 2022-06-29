@@ -15,6 +15,7 @@ export class ListItemsComponent implements OnInit {
   freezerItems: Item[];
   itemToDeleteName: string;
   loading: boolean;
+  displaySpinner: boolean;
   constructor(private service:ItemService, private modalService: NgbModal) {
   }
 
@@ -38,10 +39,25 @@ export class ListItemsComponent implements OnInit {
     }
   }
 
+  private delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+  }
+
+  private async setDisplaySpinner(){
+    await this.delay(200);
+    if(this.loading === true){
+      this.displaySpinner = true;
+    }
+    else {
+      this.loading = false;
+      this.displaySpinner = false;
+    }
+  }
+
   private getItems(){
     this.loading = true;
+    this.setDisplaySpinner();
     this.service.getItems().subscribe((response: ResponseModel) => {
-      this.loading = false;
       if(response.Items != null && this.displayFridge){
         this.fridgeItems = response.Items;
         this.service.buildLocalItemList(response.Items);
@@ -50,7 +66,11 @@ export class ListItemsComponent implements OnInit {
         this.freezerItems = response.Items;
         this.service.buildLocalItemList(response.Items);
       }
+
+      this.loading = false;
+      this.displaySpinner = false;
     });
+
   }
 
   private deleteItem(item: Item):void {
