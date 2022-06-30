@@ -11,7 +11,8 @@ export class ItemService {
   private url = "https://shje5d3m4g.execute-api.eu-west-2.amazonaws.com/Prod";
   
   public $fridgeFreezerToggle: BehaviorSubject<string>;
-  public $localItemsList: BehaviorSubject<Item[]>;
+  public $localFridgeItemsList: BehaviorSubject<Item[]>;
+  public $localFreezerItemsList: BehaviorSubject<Item[]>;
   public $itemToEdit: ReplaySubject<Item>;
 
   public testItem1: Item;
@@ -20,7 +21,8 @@ export class ItemService {
   public testItem4: Item;
   public testItems: Item[];
   constructor(private httpClient: HttpClient) { 
-    this.$localItemsList = new BehaviorSubject<Item[]>([]);
+    this.$localFridgeItemsList = new BehaviorSubject<Item[]>([]);
+    this.$localFreezerItemsList = new BehaviorSubject<Item[]>([]);
     this.$itemToEdit = new ReplaySubject<Item>();
     this.$fridgeFreezerToggle = new BehaviorSubject<string>("expirytracker");
     this.testItem1 = new Item("test item 1", 2, "23-06-2022", "Use By");
@@ -43,24 +45,61 @@ export class ItemService {
   }
 
   public buildLocalItemList(items: Item[]): void{
-    let sortedItems = this.sortLocalItems(items);
-    this.$localItemsList.next(sortedItems);
-  }
+    let fridgeItems = [];
+    let freezerItems = [];
+    for(let i=0; i<items.length; i++){
+      if(items[i].ExpiryDate != null){
+        fridgeItems.push(items[i]);
+      } else {
+        freezerItems.push(items[i]);
+      }
+    }
 
-  public addToLocalItemList(item?: Item): void{
-    var values = this.$localItemsList.getValue();
-    if(item != null){
-      values.push(item);
-      let sortedItems = this.sortLocalItems(values);
-      this.$localItemsList.next(sortedItems);
+    if(items[0].ExpiryDate != null){
+      let sortedItems = this.sortLocalItems(fridgeItems);
+      this.$localFridgeItemsList.next(sortedItems);
+  
+    } else {
+      this.$localFreezerItemsList.next(freezerItems);
     }
   }
 
+  public addToLocalItemList(item?: Item): void{
+    if(item?.ExpiryDate != null){
+      var values = this.$localFridgeItemsList.getValue();
+      if(item != null){
+        values.push(item);
+        let sortedItems = this.sortLocalItems(values);
+        this.$localFridgeItemsList.next(sortedItems);
+      }
+    } else {
+      var values = this.$localFreezerItemsList.getValue();
+      if(item != null){
+        values.push(item);
+        this.$localFreezerItemsList.next(values);
+      }
+    }
+
+  }
+
   public removeFromLocalItemList(itemToDelete?: Item): void{
-    var items = this.$localItemsList.getValue();
+    if(itemToDelete?.Drawer == null){
+      var items = this.$localFridgeItemsList.getValue();
+    } else {
+      var items = this.$localFreezerItemsList.getValue();
+    }
+
     items.forEach((item,index)=>{
-      if(item==itemToDelete) items.splice(index,1);
-   });
+      if(item==itemToDelete) {
+        items.splice(index,1);
+      }
+    });
+
+    if(itemToDelete?.Drawer == null){
+      this.$localFridgeItemsList.next(items);
+    } else {
+      this.$localFreezerItemsList.next(items);
+    }
   }
 
   public editItem(item: Item):void{

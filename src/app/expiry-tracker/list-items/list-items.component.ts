@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatAccordion } from '@angular/material/expansion';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Drawer } from '../models/drawer';
 import { Item } from '../models/item';
 import { ResponseModel } from '../models/response-model';
 import { ItemService } from '../services/item.service';
@@ -11,16 +13,21 @@ import { ItemService } from '../services/item.service';
 })
 export class ListItemsComponent implements OnInit {
   displayFridge: boolean
-  items: Item[];
+  fridgeItems: Item[];
+  freezerItems: Item[];
+  freezerDrawers: Drawer[];
   itemToDeleteName: string;
   loading: boolean;
+  displaySpinner: boolean;
+  panelOpenState = false;
+  @ViewChild(MatAccordion) accordion: MatAccordion; 
   constructor(private service:ItemService, private modalService: NgbModal) {
+    this.freezerDrawers = [new Drawer("1"), new Drawer("2"), new Drawer("3")];
   }
 
   ngOnInit(): void {
    this.getItems();
 
-    this.service.$localItemsList.subscribe((items) => {this.items = items});
     this.service.$fridgeFreezerToggle.subscribe((toggle) => {
       if(toggle === "expirytracker"){
         this.displayFridge = true;
@@ -29,17 +36,67 @@ export class ListItemsComponent implements OnInit {
       }
       this.getItems();
     });
+    
+
+    this.service.$localFridgeItemsList.subscribe((items) => {this.fridgeItems = items;});
+    this.service.$localFreezerItemsList.subscribe((items) => {
+      this.freezerItems = items;
+      this.populateFreezerDrawers(items);
+    });
+  }
+
+  private delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
+  }
+
+  private async setDisplaySpinner(){
+    await this.delay(200);
+    if(this.loading === true){
+      this.displaySpinner = true;
+    }
+    else {
+      this.loading = false;
+      this.displaySpinner = false;
+    }
   }
 
   private getItems(){
     this.loading = true;
+    this.setDisplaySpinner();
     this.service.getItems().subscribe((response: ResponseModel) => {
-      this.loading = false;
-      if(response.Items != null){
-        this.items = response.Items;
+      if(response.Items != null && this.displayFridge){
+        this.fridgeItems = response.Items;
         this.service.buildLocalItemList(response.Items);
       }
+      else if(response.Items != null && !this.displayFridge){
+        this.populateFreezerDrawers(response.Items);
+        this.freezerItems = response.Items;
+        this.service.buildLocalItemList(response.Items);
+      }
+
+      this.loading = false;
+      this.displaySpinner = false;
     });
+
+  }
+
+  private populateFreezerDrawers(items: Item[]){
+    this.freezerDrawers = [new Drawer("1"), new Drawer("2"), new Drawer("3")];
+    for(let i = 0; i < items.length; i++){
+      if(items[i].Drawer === "1"){
+        this.freezerDrawers[0].items.push(items[i]);
+      }
+      else if(items[i].Drawer === "2"){
+        this.freezerDrawers[1].items.push(items[i]);
+      }
+      else if(items[i].Drawer === "3"){
+        this.freezerDrawers[2].items.push(items[i]);
+      }
+    }
+  }
+
+  public drawerTrackBy(index: any, drawer:any){
+    return drawer.drawerNumber;
   }
 
   private deleteItem(item: Item):void {
