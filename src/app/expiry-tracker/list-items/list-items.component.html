@@ -25,15 +25,12 @@
     </form>
 </div> -->
 
-<p *ngIf="displayFridge">Fridge</p>
-<p *ngIf="!displayFridge">Freezer</p>
 <div  *ngIf="displayFridge">
   <div class="item mb-3" *ngFor="let item of fridgeItems">
     <div class="row g-0 pe-2 pt-2 pb-1">
         <div class="itemContent col-9 offset-1">
             <p class="itemName my-0">{{item.ItemName}}</p>
             <p *ngIf="displayFridge" class="itemExpiry my-0">{{item.BestBeforeOrUseBy}}: {{item.ExpiryDate}}</p>
-            <p *ngIf="!displayFridge" class="itemDrawer my-0">Drawer: {{item.Drawer}}</p>
         </div>
         <div align="right" class="itemIcons col-2">
             <mat-icon (click)="editItem(item)">edit</mat-icon>
@@ -41,28 +38,46 @@
             <p class="quantity mb-0 mt-4">x{{item.Quantity}}</p>
         </div>
     </div>
-</div>
+  </div>
 </div>
 
-<div  *ngIf="!displayFridge">
-  <div class="item mb-3" *ngFor="let item of freezerItems">
-    <div class="row g-0 pe-2 pt-2 pb-1">
-        <div class="itemContent col-9 offset-1">
-            <p class="itemName my-0">{{item.ItemName}}</p>
-            <p *ngIf="displayFridge" class="itemExpiry my-0">{{item.BestBeforeOrUseBy}}: {{item.ExpiryDate}}</p>
-            <p *ngIf="!displayFridge" class="itemDrawer my-0">Drawer: {{item.Drawer}}</p>
-        </div>
-        <div align="right" class="itemIcons col-2">
-            <mat-icon (click)="editItem(item)">edit</mat-icon>
-            <mat-icon (click)="confirmDelete(deleteItemModal, item)" color="warn">delete</mat-icon>
-            <p class="quantity mb-0 mt-4">x{{item.Quantity}}</p>
-        </div>
+<div *ngIf="!displaySpinner && !displayFridge">
+  <div class="example-action-buttons">
+    <button mat-button (click)="accordion.openAll()">Expand All</button>
+    <button mat-button (click)="accordion.closeAll()">Collapse All</button>
+  </div>
+  <mat-accordion multi>
+    <div class="mb-3" *ngFor="let drawer of freezerDrawers; index as i; trackBy: drawerTrackBy">
+          <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Drawer {{drawer.drawerNumber}}
+              </mat-panel-title>
+              <mat-panel-description>
+                Contains {{drawer.items.length}} item(s)
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            
+            <div class="item mb-3" *ngFor="let item of drawer.items">
+              <div class="row g-0 pe-2 pt-2 pb-1">
+                <div class="itemContent col-9 offset-1">
+                    <p class="itemName my-0">{{item.ItemName}}</p>
+                    <p *ngIf="displayFridge" class="itemExpiry my-0">{{item.BestBeforeOrUseBy}}: {{item.ExpiryDate}}</p>
+                </div>
+                <div align="right" class="itemIcons col-2">
+                    <mat-icon (click)="editItem(item)">edit</mat-icon>
+                    <mat-icon (click)="confirmDelete(deleteItemModal, item)" color="warn">delete</mat-icon>
+                    <p class="quantity mb-0 mt-4">x{{item.Quantity}}</p>
+                </div>
+            </div>
+          </div>
+          </mat-expansion-panel>
     </div>
-</div>
+  </mat-accordion>
 </div>
 
 <div mat-dialog-actions align="center" *ngIf="displaySpinner">
   <p>Loading items...</p>
-  <mat-spinner color="primary"></mat-spinner>
+  <mat-spinner class="loadingSpinner"></mat-spinner>
 </div>    
 

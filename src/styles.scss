@@ -53,9 +53,13 @@ form-spacer{
   height: 10px;
 }
 
+.mat-progress-spinner circle, .mat-spinner circle {
+  stroke: #25913b !important;
+  }
+
 mat-icon{
   cursor: pointer;
 }
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body, .mat-expansion-panel-content { margin: 0; font-family: Dosis, "Helvetica Neue", sans-serif !important; }

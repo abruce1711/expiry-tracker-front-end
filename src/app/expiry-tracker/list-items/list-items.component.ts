@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatAccordion } from '@angular/material/expansion';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { Drawer } from '../models/drawer';
 import { Item } from '../models/item';
 import { ResponseModel } from '../models/response-model';
 import { ItemService } from '../services/item.service';
@@ -13,10 +15,14 @@ export class ListItemsComponent implements OnInit {
   displayFridge: boolean
   fridgeItems: Item[];
   freezerItems: Item[];
+  freezerDrawers: Drawer[];
   itemToDeleteName: string;
   loading: boolean;
   displaySpinner: boolean;
+  panelOpenState = false;
+  @ViewChild(MatAccordion) accordion: MatAccordion; 
   constructor(private service:ItemService, private modalService: NgbModal) {
+    this.freezerDrawers = [new Drawer("1"), new Drawer("2"), new Drawer("3")];
   }
 
   ngOnInit(): void {
@@ -30,13 +36,13 @@ export class ListItemsComponent implements OnInit {
       }
       this.getItems();
     });
+    
 
-    if(this.displayFridge){
-      this.service.$localFridgeItemsList.subscribe((items) => {this.fridgeItems = items});
-    }
-    else {
-      this.service.$localFreezerItemsList.subscribe((items) => {this.freezerItems = items});
-    }
+    this.service.$localFridgeItemsList.subscribe((items) => {this.fridgeItems = items;});
+    this.service.$localFreezerItemsList.subscribe((items) => {
+      this.freezerItems = items;
+      this.populateFreezerDrawers(items);
+    });
   }
 
   private delay(ms: number) {
@@ -63,6 +69,7 @@ export class ListItemsComponent implements OnInit {
         this.service.buildLocalItemList(response.Items);
       }
       else if(response.Items != null && !this.displayFridge){
+        this.populateFreezerDrawers(response.Items);
         this.freezerItems = response.Items;
         this.service.buildLocalItemList(response.Items);
       }
@@ -71,6 +78,25 @@ export class ListItemsComponent implements OnInit {
       this.displaySpinner = false;
     });
 
+  }
+
+  private populateFreezerDrawers(items: Item[]){
+    this.freezerDrawers = [new Drawer("1"), new Drawer("2"), new Drawer("3")];
+    for(let i = 0; i < items.length; i++){
+      if(items[i].Drawer === "1"){
+        this.freezerDrawers[0].items.push(items[i]);
+      }
+      else if(items[i].Drawer === "2"){
+        this.freezerDrawers[1].items.push(items[i]);
+      }
+      else if(items[i].Drawer === "3"){
+        this.freezerDrawers[2].items.push(items[i]);
+      }
+    }
+  }
+
+  public drawerTrackBy(index: any, drawer:any){
+    return drawer.drawerNumber;
   }
 
   private deleteItem(item: Item):void {

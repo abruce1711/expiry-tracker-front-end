@@ -83,10 +83,23 @@ export class ItemService {
   }
 
   public removeFromLocalItemList(itemToDelete?: Item): void{
-    var items = this.$localFridgeItemsList.getValue();
+    if(itemToDelete?.Drawer == null){
+      var items = this.$localFridgeItemsList.getValue();
+    } else {
+      var items = this.$localFreezerItemsList.getValue();
+    }
+
     items.forEach((item,index)=>{
-      if(item==itemToDelete) items.splice(index,1);
-   });
+      if(item==itemToDelete) {
+        items.splice(index,1);
+      }
+    });
+
+    if(itemToDelete?.Drawer == null){
+      this.$localFridgeItemsList.next(items);
+    } else {
+      this.$localFreezerItemsList.next(items);
+    }
   }
 
   public editItem(item: Item):void{
