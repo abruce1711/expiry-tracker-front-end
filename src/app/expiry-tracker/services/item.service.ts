@@ -49,6 +49,14 @@ export class ItemService {
     let freezerItems = [];
     for(let i=0; i<items.length; i++){
       if(items[i].ExpiryDate != null){
+        let expiry = "" + items[i].ExpiryDate;
+        let today = new Date().toDateString();
+        let item = items[i];
+        debugger;
+        if(expiry > today){
+          console.log("hit");
+          items[i].itemGood = true;
+        }
         fridgeItems.push(items[i]);
       } else {
         freezerItems.push(items[i]);
