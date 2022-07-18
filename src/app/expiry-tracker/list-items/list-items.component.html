@@ -29,7 +29,9 @@
   <div class="item mb-3" *ngFor="let item of fridgeItems">
     <div class="row g-0 pe-2 pt-2 pb-1">
       <div class="col-1">
-        <span class="dot" [ngClass]="item.itemGood ? 'dot greenDot' : 'dot'"></span>
+        <span *ngIf="item.itemGood" class="dot greenDot"></span>
+        <span *ngIf="item.itemOk" class="dot orangeDot"></span>
+        <span *ngIf="item.itemBad" class="dot redDot"></span>
       </div>
         <div class="itemContent col-8 me-auto">
             <p class="itemName my-0">{{item.ItemName}}</p>

@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
@@ -20,6 +21,7 @@ export class ItemService {
   public testItem3: Item;
   public testItem4: Item;
   public testItems: Item[];
+  private datepipe: DatePipe = new DatePipe('en-GB')
   constructor(private httpClient: HttpClient) { 
     this.$localFridgeItemsList = new BehaviorSubject<Item[]>([]);
     this.$localFreezerItemsList = new BehaviorSubject<Item[]>([]);
@@ -44,18 +46,26 @@ export class ItemService {
     return this.httpClient.delete<ResponseModel>(`${`${this.url}/${this.$fridgeFreezerToggle.value}`}?userId=1&itemName=${itemName}`);
   }
 
+  private removeTime(date: Date) {
+    return new Date(date.toDateString());
+  }
+
   public buildLocalItemList(items: Item[]): void{
     let fridgeItems = [];
     let freezerItems = [];
     for(let i=0; i<items.length; i++){
       if(items[i].ExpiryDate != null){
-        let expiry = "" + items[i].ExpiryDate;
-        let today = new Date().toDateString();
-        let item = items[i];
-        debugger;
-        if(expiry > today){
-          console.log("hit");
+        let expiryArray = items[i].ExpiryDate?.split('/');
+        let formattedExpiry = this.datepipe.transform(new Date(parseInt(expiryArray![2]), parseInt(expiryArray![1])-1, parseInt(expiryArray![0])), 'yyyy-MM-dd');
+        let today = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
+        if(formattedExpiry! > today!){
           items[i].itemGood = true;
+        }
+        else if(formattedExpiry == today){
+          items[i].itemOk = true;
+        }
+        else if(formattedExpiry! < today!) {
+          items[i].itemBad = true;
         }
         fridgeItems.push(items[i]);
       } else {
