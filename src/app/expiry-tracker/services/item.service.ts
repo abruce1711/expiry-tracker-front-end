@@ -46,8 +46,21 @@ export class ItemService {
     return this.httpClient.delete<ResponseModel>(`${`${this.url}/${this.$fridgeFreezerToggle.value}`}?userId=1&itemName=${itemName}`);
   }
 
-  private removeTime(date: Date) {
-    return new Date(date.toDateString());
+  private setExpiryLight(item: Item): Item {
+    let expiryArray = item.ExpiryDate?.split('/');
+    let formattedExpiry = this.datepipe.transform(new Date(parseInt(expiryArray![2]), parseInt(expiryArray![1])-1, parseInt(expiryArray![0])), 'yyyy-MM-dd');
+    let today = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
+    if(formattedExpiry! > today!){
+      item.itemGood = true;
+    }
+    else if(formattedExpiry == today){
+      item.itemOk = true;
+    }
+    else if(formattedExpiry! < today!) {
+      item.itemBad = true;
+    }
+
+    return item;
   }
 
   public buildLocalItemList(items: Item[]): void{
@@ -55,18 +68,7 @@ export class ItemService {
     let freezerItems = [];
     for(let i=0; i<items.length; i++){
       if(items[i].ExpiryDate != null){
-        let expiryArray = items[i].ExpiryDate?.split('/');
-        let formattedExpiry = this.datepipe.transform(new Date(parseInt(expiryArray![2]), parseInt(expiryArray![1])-1, parseInt(expiryArray![0])), 'yyyy-MM-dd');
-        let today = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
-        if(formattedExpiry! > today!){
-          items[i].itemGood = true;
-        }
-        else if(formattedExpiry == today){
-          items[i].itemOk = true;
-        }
-        else if(formattedExpiry! < today!) {
-          items[i].itemBad = true;
-        }
+        this.setExpiryLight(items[i]);
         fridgeItems.push(items[i]);
       } else {
         freezerItems.push(items[i]);
@@ -86,6 +88,7 @@ export class ItemService {
     if(item?.ExpiryDate != null){
       var values = this.$localFridgeItemsList.getValue();
       if(item != null){
+        this.setExpiryLight(item);
         values.push(item);
         let sortedItems = this.sortLocalItems(values);
         this.$localFridgeItemsList.next(sortedItems);

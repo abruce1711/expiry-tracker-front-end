@@ -77,7 +77,6 @@ export class ListItemsComponent implements OnInit {
       this.loading = false;
       this.displaySpinner = false;
     });
-
   }
 
   private populateFreezerDrawers(items: Item[]){
