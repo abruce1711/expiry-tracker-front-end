@@ -50,10 +50,12 @@ export class ItemService {
     for(let i=0; i<items.length; i++){
       if(items[i].ExpiryDate != null){
         let expiry = "" + items[i].ExpiryDate;
-        let today = new Date().toDateString();
+        let test = Date.parse(expiry);
+        let today = new Date().toLocaleDateString("en-GB");
+        let test2 = Date.parse(today);
         let item = items[i];
         debugger;
-        if(expiry > today){
+        if(expiry < today){
           console.log("hit");
           items[i].itemGood = true;
         }
