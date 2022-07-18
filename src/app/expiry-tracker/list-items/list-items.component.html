@@ -25,6 +25,12 @@
     </form>
 </div> -->
 
+<mat-select class="col-5 offset-7 col-md-3 offset-md-9" *ngIf="displayFridge" (selectionChange)="sortItems($event.value)" [(value)]="sortOption">
+  <mat-option *ngFor="let option of sortOptions" [value]="option">
+    {{option}}
+  </mat-option>
+</mat-select>
+
 <div  *ngIf="displayFridge">
   <div class="item mb-3" *ngFor="let item of fridgeItems">
     <div class="row g-0 pe-2 pt-2 pb-1">
