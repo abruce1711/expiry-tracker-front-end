@@ -15,7 +15,8 @@ export class ItemService {
   public $localFridgeItemsList: BehaviorSubject<Item[]>;
   public $localFreezerItemsList: BehaviorSubject<Item[]>;
   public $itemToEdit: ReplaySubject<Item>;
-
+  public $sortOption: ReplaySubject<string>;
+  public sortOption: string;
   public testItem1: Item;
   public testItem2: Item;
   public testItem3: Item;
@@ -26,12 +27,15 @@ export class ItemService {
     this.$localFridgeItemsList = new BehaviorSubject<Item[]>([]);
     this.$localFreezerItemsList = new BehaviorSubject<Item[]>([]);
     this.$itemToEdit = new ReplaySubject<Item>();
+    this.$sortOption = new ReplaySubject<string>();
+    this.sortOption = "Sort by date";
     this.$fridgeFreezerToggle = new BehaviorSubject<string>("expirytracker");
     this.testItem1 = new Item("test item 1", 2, "23-06-2022", "Use By");
     this.testItem2 = new Item("test item 2", 1, "28-06-2022", "Best Before");
     this.testItem3 = new Item("test item 3", 2, undefined, undefined, "2");
     this.testItem4 = new Item("test item 4", 2, undefined, undefined, "1");
     this.testItems = [this.testItem1, this.testItem2, this.testItem3, this.testItem4];
+    this.$sortOption.subscribe((value) => {this.sortOption = value; this.buildLocalItemList()})
   }
 
   public getItems(): Observable<ResponseModel>{
@@ -63,7 +67,15 @@ export class ItemService {
     return item;
   }
 
-  public buildLocalItemList(items: Item[]): void{
+  public buildLocalItemList(items?: Item[]): void{
+    if(items == null){
+      if(this.$fridgeFreezerToggle.getValue() == "expirytracker"){
+        items = this.$localFridgeItemsList.getValue();
+      } else {
+        items = this.$localFreezerItemsList.getValue();
+      }
+    }
+
     let fridgeItems = [];
     let freezerItems = [];
     for(let i=0; i<items.length; i++){
@@ -130,13 +142,17 @@ export class ItemService {
 
   public sortLocalItems(items: Item[]): Item[]{
     // Sorts by soonest expiry date first
-    return items.sort((a,b) => {
-      var aa = a.ExpiryDate?.split('/').reverse().join();
-      var bb = b.ExpiryDate?.split('/').reverse().join();
-      if(aa != null && bb != null)
-        return aa < bb ? -1 : (aa > bb ? 1 : 0);
-      
-      return 0;
-    });
+    if(this.sortOption == "Sort by date"){
+      return items.sort((a,b) => {
+        var aa = a.ExpiryDate?.split('/').reverse().join();
+        var bb = b.ExpiryDate?.split('/').reverse().join();
+        if(aa != null && bb != null)
+          return aa < bb ? -1 : (aa > bb ? 1 : 0);
+        
+        return 0;
+      }); 
+    } else {
+      return items.sort((a, b) => a.ItemName.localeCompare(b.ItemName));
+    }
   }
 }
