@@ -38,7 +38,7 @@ export class ListItemsComponent implements OnInit {
     });
     
 
-    this.service.$localFridgeItemsList.subscribe((items) => {this.fridgeItems = items;});
+    this.service.$localFridgeItemsList.subscribe((items) => {this.fridgeItems = items; console.log(items)});
     this.service.$localFreezerItemsList.subscribe((items) => {
       this.freezerItems = items;
       this.populateFreezerDrawers(items);
@@ -77,7 +77,6 @@ export class ListItemsComponent implements OnInit {
       this.loading = false;
       this.displaySpinner = false;
     });
-
   }
 
   private populateFreezerDrawers(items: Item[]){
