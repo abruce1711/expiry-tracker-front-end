@@ -13,7 +13,7 @@ phases:
   pre_build:
     commands:
       - echo installing dependencies...
-      - npm i -g @angular/cli
+      - npm i -g @angular/cli npm@latest
       - npm install
   build:
     commands:
