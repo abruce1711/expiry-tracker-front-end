@@ -4,6 +4,10 @@
     border-radius: 5px;
 }
 
+.itemContent{
+    margin-left: 25px;
+}
+
 .itemName{
     font-size: 25px;
 }
@@ -15,3 +19,43 @@
 .mat-expansion-panel-header{
     height: 100px;
 }
+
+.dot {
+    height: 25px;
+    width: 25px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 22px 0 0 20px;
+  }
+
+  .greenDot{
+    background-color: #25913b !important;
+  }
+
+  .orangeDot {
+    background-color: #FFC107 !important;
+  }
+
+  .redDot {
+    background-color: #DC3545 !important;
+  }
+
+  .mat-select {
+    background-color: white !important;
+  }
+
+  .fridgeItems {
+    margin-top: -50px;
+  }
+
+  @media only screen and (max-width: 600px) {
+    .dot {
+        height: 20px;
+        width: 20px;
+        background-color: #bbb;
+        border-radius: 50%;
+        display: inline-block;
+        margin: 22px 0 0 15px;
+      }
+  }

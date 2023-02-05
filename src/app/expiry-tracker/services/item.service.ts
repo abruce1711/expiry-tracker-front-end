@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
@@ -14,22 +15,27 @@ export class ItemService {
   public $localFridgeItemsList: BehaviorSubject<Item[]>;
   public $localFreezerItemsList: BehaviorSubject<Item[]>;
   public $itemToEdit: ReplaySubject<Item>;
-
+  public $sortOption: ReplaySubject<string>;
+  public sortOption: string;
   public testItem1: Item;
   public testItem2: Item;
   public testItem3: Item;
   public testItem4: Item;
   public testItems: Item[];
+  private datepipe: DatePipe = new DatePipe('en-GB')
   constructor(private httpClient: HttpClient) { 
     this.$localFridgeItemsList = new BehaviorSubject<Item[]>([]);
     this.$localFreezerItemsList = new BehaviorSubject<Item[]>([]);
     this.$itemToEdit = new ReplaySubject<Item>();
+    this.$sortOption = new ReplaySubject<string>();
+    this.sortOption = "Sort by date";
     this.$fridgeFreezerToggle = new BehaviorSubject<string>("expirytracker");
     this.testItem1 = new Item("test item 1", 2, "23-06-2022", "Use By");
     this.testItem2 = new Item("test item 2", 1, "28-06-2022", "Best Before");
     this.testItem3 = new Item("test item 3", 2, undefined, undefined, "2");
     this.testItem4 = new Item("test item 4", 2, undefined, undefined, "1");
     this.testItems = [this.testItem1, this.testItem2, this.testItem3, this.testItem4];
+    this.$sortOption.subscribe((value) => {this.sortOption = value; this.buildLocalItemList()})
   }
 
   public getItems(): Observable<ResponseModel>{
@@ -44,11 +50,37 @@ export class ItemService {
     return this.httpClient.delete<ResponseModel>(`${`${this.url}/${this.$fridgeFreezerToggle.value}`}?userId=1&itemName=${itemName}`);
   }
 
-  public buildLocalItemList(items: Item[]): void{
+  private setExpiryLight(item: Item): Item {
+    let expiryArray = item.ExpiryDate?.split('/');
+    let formattedExpiry = this.datepipe.transform(new Date(parseInt(expiryArray![2]), parseInt(expiryArray![1])-1, parseInt(expiryArray![0])), 'yyyy-MM-dd');
+    let today = this.datepipe.transform(new Date(), 'yyyy-MM-dd');
+    if(formattedExpiry! > today!){
+      item.itemGood = true;
+    }
+    else if(formattedExpiry == today){
+      item.itemOk = true;
+    }
+    else if(formattedExpiry! < today!) {
+      item.itemBad = true;
+    }
+
+    return item;
+  }
+
+  public buildLocalItemList(items?: Item[]): void{
+    if(items == null){
+      if(this.$fridgeFreezerToggle.getValue() == "expirytracker"){
+        items = this.$localFridgeItemsList.getValue();
+      } else {
+        items = this.$localFreezerItemsList.getValue();
+      }
+    }
+
     let fridgeItems = [];
     let freezerItems = [];
     for(let i=0; i<items.length; i++){
       if(items[i].ExpiryDate != null){
+        this.setExpiryLight(items[i]);
         fridgeItems.push(items[i]);
       } else {
         freezerItems.push(items[i]);
@@ -68,6 +100,7 @@ export class ItemService {
     if(item?.ExpiryDate != null){
       var values = this.$localFridgeItemsList.getValue();
       if(item != null){
+        this.setExpiryLight(item);
         values.push(item);
         let sortedItems = this.sortLocalItems(values);
         this.$localFridgeItemsList.next(sortedItems);
@@ -109,13 +142,17 @@ export class ItemService {
 
   public sortLocalItems(items: Item[]): Item[]{
     // Sorts by soonest expiry date first
-    return items.sort((a,b) => {
-      var aa = a.ExpiryDate?.split('/').reverse().join();
-      var bb = b.ExpiryDate?.split('/').reverse().join();
-      if(aa != null && bb != null)
-        return aa < bb ? -1 : (aa > bb ? 1 : 0);
-      
-      return 0;
-    });
+    if(this.sortOption == "Sort by date"){
+      return items.sort((a,b) => {
+        var aa = a.ExpiryDate?.split('/').reverse().join();
+        var bb = b.ExpiryDate?.split('/').reverse().join();
+        if(aa != null && bb != null)
+          return aa < bb ? -1 : (aa > bb ? 1 : 0);
+        
+        return 0;
+      }); 
+    } else {
+      return items.sort((a, b) => a.ItemName.localeCompare(b.ItemName));
+    }
   }
 }

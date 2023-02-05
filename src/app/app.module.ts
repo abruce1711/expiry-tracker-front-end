@@ -13,6 +13,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatExpansionModule} from '@angular/material/expansion';
+import { LOCALE_ID, Inject } from '@angular/core';
 
 const MY_DATE_FORMAT = {
   parse: {
@@ -46,7 +47,8 @@ const MY_DATE_FORMAT = {
   providers: [
     ItemService,
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE] },
-    { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMAT } 
+    { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMAT },
+    {provide: LOCALE_ID, useValue: 'en-GB' }
   ],
   bootstrap: [AppComponent],
   schemas:[CUSTOM_ELEMENTS_SCHEMA]

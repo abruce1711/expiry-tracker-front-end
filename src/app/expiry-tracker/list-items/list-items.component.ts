@@ -21,8 +21,10 @@ export class ListItemsComponent implements OnInit {
   displaySpinner: boolean;
   panelOpenState = false;
   @ViewChild(MatAccordion) accordion: MatAccordion; 
+  sortOption: string;
   constructor(private service:ItemService, private modalService: NgbModal) {
     this.freezerDrawers = [new Drawer("1"), new Drawer("2"), new Drawer("3")];
+    this.sortOption = "Sort by date";
   }
 
   ngOnInit(): void {
@@ -38,11 +40,17 @@ export class ListItemsComponent implements OnInit {
     });
     
 
-    this.service.$localFridgeItemsList.subscribe((items) => {this.fridgeItems = items;});
+    this.service.$localFridgeItemsList.subscribe((items) => {this.fridgeItems = items; console.log(items)});
     this.service.$localFreezerItemsList.subscribe((items) => {
       this.freezerItems = items;
       this.populateFreezerDrawers(items);
     });
+  }
+
+  public sortOptions = ["Sort by name", "Sort by date"];
+
+  public sortItems(sortType: string){
+      this.service.$sortOption.next(sortType);
   }
 
   private delay(ms: number) {
@@ -77,7 +85,6 @@ export class ListItemsComponent implements OnInit {
       this.loading = false;
       this.displaySpinner = false;
     });
-
   }
 
   private populateFreezerDrawers(items: Item[]){
